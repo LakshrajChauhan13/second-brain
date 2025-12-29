@@ -22,7 +22,7 @@ app.use(cors({
 }))
 
 
-app.post('/api/v1/signup' , async(req , res) => {
+app.post('/api/v1/signup', async(req , res) => {
     const { email , password , username} = req.body;
     const hashPassword = await bcrypt.hash(password , 5)
     try{
@@ -33,7 +33,7 @@ app.post('/api/v1/signup' , async(req , res) => {
         })
         
         res.status(200).json({
-            message : " Signed Up!! "
+            message : " Signed up successfully!! "
         })
     }
     catch(err){
@@ -43,7 +43,7 @@ app.post('/api/v1/signup' , async(req , res) => {
     }
 })
 
-app.post('/api/v1/signin' ,async (req , res) => {
+app.post('/api/v1/signin', async (req , res) => {
     const { email , password } = req.body;
     const response = await userModel.findOne({
         email : email
@@ -69,17 +69,38 @@ app.post('/api/v1/signin' ,async (req , res) => {
         id : response._id
         
     } , SECRET_KEY || '' )
+    
+    const {password: _pwd, _id: __id, __v: ___v, ...userSafe } = response?.toObject()
     res.cookie("accessToken" , token)
 
     res.status(200).json({
-       message : "User signed in !!"
+        user: userSafe,
+        message : "User signed in !!"
     })
 
 })
 
+app.get('/api/v1/signout', authMiddleware, async (req , res) => {
+    res.clearCookie("accessToken");
+    return res.json({
+        message: "User logged out"
+    });
+})
+
 app.get('/api/v1/auth/me' , authMiddleware , async (req , res) => {
     const userId = (req as any).id
+    const user = await userModel.findOne({
+        _id: userId
+    })
+    if(!user){
+        return res.status(404).json({
+            message: "User not found!"
+        })
+    }
+    const {password: _pwd, _id: __id, __v: ___v, ...userSafe } = user?.toObject()
+    
     return res.json({
+        user: userSafe,
         message : "Valid User"
     })
 })
@@ -197,6 +218,7 @@ app.get('/api/v1/brain/:shareLink' , async (req , res) => {
     })
 
 })
+
 
 async function main(){
     await dbConnect()

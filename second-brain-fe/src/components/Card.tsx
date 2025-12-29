@@ -7,6 +7,7 @@ import { getYouTubeEmbedUrl } from "../utils";
 import { TwitterIcon } from "../icons/TwitterIcon";
 import CopyIcon from "../icons/CopyIcon";
 import { TickIcon } from "../icons/TickIcon";
+import { useToast } from "../store/toastHook";
 
 interface CardPropsInterface {
     id : string;
@@ -34,12 +35,13 @@ const iconStyle = "size-4 text-slate-400 font-bold"
 const Card = (props: CardPropsInterface) => {
 
     const [isCopied , setIsCopied] = useState(false)
+    const toast = useToast()
     
      async function deleteIt(){
         props.onDelete(props.id)
     }
 
-    async function shareContent(data: string){
+    async function shareContent(){
         
         const shareMessages = {
             Video: `Watch this video: ${props.title}`,
@@ -71,8 +73,8 @@ const Card = (props: CardPropsInterface) => {
 
     function fallBackCopy(){
         navigator.clipboard.writeText(props.link)
-        .then(() => alert('Link Copied to clipboard'))
-        .catch(err => console.error('Failed to copy:' , err))
+        .then(() => toast.copied('Copied to clipboard'))
+        .catch(() => toast.error('Failed to copy'))
     }
 
     function onCopy(){
@@ -80,7 +82,7 @@ const Card = (props: CardPropsInterface) => {
         copySwitch()
         setTimeout(() => {
             copySwitch()
-        }, 2000);
+        }, 1000);
     }
 
     function copySwitch(){
@@ -95,11 +97,11 @@ const Card = (props: CardPropsInterface) => {
         <div className="flex items-center justify-between pb-1.5 gap-4 ">
             <div className="flex items-center justify-center gap-1.5">
                 <div className={`shrink-0 size-5 text-slate-950 `}> {brainType[props.type]}</div>
-                <div className="break-all line-clamp-2 cursor-pointer" title={props.title}> {props.title} </div>
+                <div className="break-all line-clamp-2 cursor-default" title={props.title}> {props.title} </div>
             </div>
 
             <div className="flex items-center justify-center gap-2.5">
-                <span onClick={() => shareContent(props.link)} className={` ${iconStyle} hover:text-blue-600 hover:transition duration-130 ease-in-out cursor-pointer `}>
+                <span onClick={shareContent} className={` ${iconStyle} hover:text-blue-600 hover:transition duration-130 ease-in-out cursor-pointer `}>
                      <ShareIcon /> 
                 </span>
                 <span onClick={() => onCopy()} className={` ${iconStyle} hover:text-green-600 transition-all duration-130 ease-in-out cursor-pointer `}>

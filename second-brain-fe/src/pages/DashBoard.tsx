@@ -10,14 +10,19 @@ import { useAppDispatch, useAppSelector } from "../store/hook";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { removeContent, setContent } from "../store/slice/contentSlice";
 import DeleteContentModal from "../components/DeleteContentModal";
+import { ToastNotification } from "../components/ToastNotification";
+import { useToast } from "../store/toastHook";
+import { AnimatePresence } from "framer-motion";
 
 const DashBoard = () => {
     const [isOpen, setIsOpen] = useState(false)
     const [contentToDelete , setContentToDelete] =  useState<string | null>(null)
-    const [isScrolled , setIsScrolled] = useState(false)
     const dispatch = useAppDispatch()   // to dispatch an event to the reducer to update the store's value
     const contents = useAppSelector((state) => state.content.contents)      // to get the store's value
+    const toasts = useAppSelector((state) => state.toast.toasts)
+    const toast = useToast()
     const queryClient = useQueryClient()
+    
 
     const { data, isLoading , error } = useQuery({
         queryKey : ['contents'],
@@ -39,10 +44,13 @@ const DashBoard = () => {
             dispatch(removeContent(id))
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['contents'] })},
+            queryClient.invalidateQueries({ queryKey: ['contents'] })
+            toast.deleted('Content deleted !!')
+        },
+            
         onError: (error) => {
             queryClient.invalidateQueries({ queryKey: ['contents'] })
-            alert('Failed to delete content')
+            toast.error('Error occurred , Deletion failed')
             console.log(error)
         }
     })
@@ -74,6 +82,7 @@ const DashBoard = () => {
     // }
 
   return (
+    <>
       <div className="flex w-full h-screen">
             <div className="w-82 h-full bg-white border-r-2 border-gray-300">
                 <SideBar />
@@ -81,8 +90,9 @@ const DashBoard = () => {
 
             <div className="flex-1 h-screen bg-gray-200 relative overflow-y-auto">
 
-                <header className="flex justify-between h-16 p-2 pl-7 items-center gap-2 sticky top-0 left-0 right-0 z-10 backdrop-blur-md  bg-gray-200/50 " >
-                    <span className="text-black font-bold text-3xl">All Notes</span>
+            
+                <header className="flex justify-between h-16 p-2 pl-7 items-center gap-2 sticky top-0 left-0 right-0 z-10 backdrop-blur-sm bg-white/50  " >
+                    <span className="text-black font-bold text-4xl">All Notes</span>
                     <span className="flex justify-end gap-2 p-1">
                         <span onClick={() => setIsOpen(c => !c)}>
                             <Button text="Add Content" icon={<PlusIcon />} size="lg" variant="primary" />
@@ -127,8 +137,21 @@ const DashBoard = () => {
                 )}
                 <DeleteContentModal open={contentToDelete !== null} deleteConfirm={onConfirmDelete} onClose={onDeleteModalClose}  />
                 <CreateContentModal open={isOpen} onClose={onClose} />
+
+                
             </div>
         </div>
+            {/* <div className=" fixed bottom-5 right-5 w-80 z-9999 pointer-events-none">
+                    <AnimatePresence mode="popLayout">
+                        {
+                            toasts && toasts.map((toast, index) => ( 
+                                <ToastNotification message={toast.message} type={toast.type} key={toast.id} zIndex={9999 - index}
+                                index={index}  />
+                            ))
+                        }
+                    </AnimatePresence>
+            </div> */}
+    </>
     );
 };
 

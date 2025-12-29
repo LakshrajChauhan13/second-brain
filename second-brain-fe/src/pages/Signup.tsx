@@ -2,24 +2,57 @@ import { useState } from "react"
 import { Button } from "../components/Button"
 import { Input } from "../components/Input"
 import { signUpUser } from "../api/auth.api"
+import { useMutation } from "@tanstack/react-query"
+import { useToast } from "../store/toastHook"
+import type { AxiosError } from "axios"
 
 
 const Signup = ({SignUpToggle}: {SignUpToggle :() => void}) => {
     const [userName , setUserName] = useState('')
     const [password , setPassword] = useState('')
     const [email , setEmail] = useState('')
+    const toast =  useToast()
+
+    interface userData {
+        userName: string;
+        email: string;
+        password: string;
+    }
+
+    interface ErrorMessage {
+        message: string
+    }
 
     async function submitHandler(e: any){
         e.preventDefault();
-        try{
-            const response = await signUpUser(userName , email , password)
-            console.log(response.data.message)
-            SignUpToggle()
-        }
-        catch(err: any){
-            console.log(err.response.data.message)
-        }
+        // try{
+        //     const response = await signUpUser(userName , email , password)
+        //     console.log(response.data.message)
+        //     SignUpToggle()
+        // }
+        // catch(err: any){
+        //     console.log(err.response.data.message)
+            
+        // }
+        signUpMutation.mutate({userName, email, password})
     }
+
+    const signUpMutation = useMutation({
+        mutationFn: ({userName, email, password}: userData) => signUpUser(userName, email, password),
+
+        onSuccess: (data) => {
+            console.log(data.data.message);
+            const message = data.data.message;
+            toast.success(message)
+            SignUpToggle()
+        },
+
+        onError: (error: AxiosError<ErrorMessage>) => {
+            const err = error.response?.data?.message || 'Something went wrong';
+            console.log(err);
+            toast.error(err)
+        }
+    })
         
 
   return ( 
@@ -34,7 +67,7 @@ const Signup = ({SignUpToggle}: {SignUpToggle :() => void}) => {
             <Input placeholder="Enter email" type="email" value={email} func={(e) => setEmail(e.target.value)}/>
             <Input placeholder="Enter password" type="password" value={password} func={(e) => setPassword(e.target.value)}/>
 
-            <Button variant="primary" text="Sign Up" size="lg" />
+            <Button variant="primary" text={signUpMutation.isPending ? 'Signing Up...' : 'Sign Up'} size="lg" disabled={signUpMutation.isPending} />
         </form>
         <h1> Already have an account? <span onClick={SignUpToggle} className='font-semibold cursor-pointer'> Sign In</span></h1>
 

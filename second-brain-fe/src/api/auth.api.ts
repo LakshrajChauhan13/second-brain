@@ -1,4 +1,3 @@
-import { redirect } from "@tanstack/react-router";
 import { axiosInstance } from "../axiosInstance";
 
 export async function signUpUser(username: string , email: string , password: string){
@@ -8,7 +7,7 @@ export async function signUpUser(username: string , email: string , password: st
             password: password,
             username : username
         })
-    return response
+    return response             
 }
 
 export async function signInUser(email: string , password: string){
@@ -20,15 +19,22 @@ export async function signInUser(email: string , password: string){
     return response;
 }
 
+export async function signOutUser() {
+    const response = await axiosInstance.get('/api/v1/signout');
+    return response;
+}
+
 export async function getCurrentUser(){
-    try{
+    // try{
         const response = await axiosInstance.get('/api/v1/auth/me')
         console.log(response.data.message)
-    }
-    catch(err: any){
-        console.log(err.response.data.message)
-        throw redirect({to : '/auth'})
+        return response
+    // }
+    // catch(err: any){
+    //     console.log(err.response.data.message)
+    //     throw redirect({to : '/auth'})
         
-    }
- 
+    // }
+    
 }
+    

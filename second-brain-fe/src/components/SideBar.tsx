@@ -1,4 +1,4 @@
-import type { ReactElement } from "react"
+import { type ReactElement } from "react"
 import { DocumentIcon } from "../icons/DocumentIcon"
 import { LinkIcon } from "../icons/LinkIcon"
 import { TagIcon } from "../icons/TagIcon"
@@ -6,8 +6,10 @@ import SideBarItem from "./SideBarItem"
 import { TwitterIcon } from "../icons/TwitterIcon"
 import { VideoIcon } from "../icons/VideoIcon"
 import { BrainIcon } from "../icons/BrainIcon"
+import UserDetails from "./UserDetails"
 
 const SideBar = () => {
+
     interface ItemsInterface {
         icon: ReactElement,
         text: string
@@ -35,8 +37,10 @@ const SideBar = () => {
         },
     ]
 
+    
+
   return (
-    <div className="flex flex-col gap-5 px-2 fixed">
+    <div className="flex flex-col gap-5 px-2 w-82 fixed h-screen">
         <div className="text-2xl font-bold py-1.5 flex gap-1 items-center"> 
             <span className="text-blue-700"> <BrainIcon /> </span> 
             Second Brain
@@ -45,8 +49,11 @@ const SideBar = () => {
             { items.map((elem , index) => {
                return <SideBarItem icon={elem.icon} text={elem.text} key={index}/>
             })}
-       
         </div>
+
+        <UserDetails />
+        
+       
     </div>
   )
 }
