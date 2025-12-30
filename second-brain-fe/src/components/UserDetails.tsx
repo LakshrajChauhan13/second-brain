@@ -67,7 +67,7 @@ const UserDetails = () => {
                             <LogoutIcon />
                     </motion.button>
                 </div>
-
+        
                 <div className="bg-slate-900/15 hover:bg-slate-900/30 rounded">
                     <motion.button 
                         whileHover={{scale:1.25 , rotate:-12}}

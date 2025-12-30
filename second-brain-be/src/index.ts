@@ -12,6 +12,8 @@ import {authMiddleware } from './middleware/auth.middleware.js'
 import { linkModel } from './models/link.model.js'
 import { generateRandom } from './utils/utils.js'
 import { tagModel } from './models/tag.model.js'
+import { flattenError, z } from 'zod'
+import { safeSignInSchema, safeSignUpSchema } from './zod.js'
 
 const app = express()
 app.use(express.json())
@@ -23,7 +25,16 @@ app.use(cors({
 
 
 app.post('/api/v1/signup', async(req , res) => {
-    const { email , password , username} = req.body;
+   const parsedBody = safeSignUpSchema.safeParse(req.body)
+
+   if(!parsedBody.success){
+        return res.status(400).json({
+            message: "Incorrect Format",
+            errors: z.flattenError(parsedBody.error).fieldErrors
+        })
+   }
+   
+   const { email , password , username} = parsedBody.data;     // not from the req.body for more safety, but from parsedBody.data
     const hashPassword = await bcrypt.hash(password , 5)
     try{
         await userModel.create({
@@ -36,15 +47,41 @@ app.post('/api/v1/signup', async(req , res) => {
             message : " Signed up successfully!! "
         })
     }
-    catch(err){
-        res.status(411).json({
-            message : " User already exists !"
+    catch(err: any){
+        if(err.code === 11000){
+
+            if(err.keyPattern?.username){
+                res.status(409).json({
+                message : "Username already taken !!"
+                })        
+            }
+
+            if(err.keyPattern?.email){
+                res.status(409).json({
+                message : " User already exists !"
+                })        
+            }
+
+        }
+
+        res.status(409).json({
+            error: err.message,
+            message : "Internal Server Error"
         })
     }
 })
 
 app.post('/api/v1/signin', async (req , res) => {
-    const { email , password } = req.body;
+    const parsedBody = safeSignInSchema.safeParse(req.body)
+
+    if(!parsedBody.success){
+        return res.status(400).json({
+            message: "Incorrect format",
+            errors: flattenError(parsedBody.error).fieldErrors,
+        })
+    }
+    
+    const { email , password } = parsedBody.data;
     const response = await userModel.findOne({
         email : email
     })    

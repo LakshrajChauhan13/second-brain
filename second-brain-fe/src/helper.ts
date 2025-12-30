@@ -4,8 +4,7 @@ import { addUser } from "./store/slice/userSlice"
 import { redirect } from "@tanstack/react-router"
 import { store } from "./store/store"
 
-export const 
-checkAuth = async () => {
+export const checkAuth = async () => {
     const queryClient = new QueryClient()
 
     try{
@@ -34,9 +33,8 @@ checkAuth = async () => {
 
 
 export const ifAuthenticated = () => { 
-    const userStatus = localStorage.getItem("isAuthenticated")
-    
+    const userStatus = localStorage.getItem("isAuthenticated");
     if(userStatus == "true"){
-        throw redirect ({ to: '/dashboard'})
+        throw redirect ({ to: '/dashboard'});
     }
 }

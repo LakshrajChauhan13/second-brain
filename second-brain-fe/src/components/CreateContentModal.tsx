@@ -85,7 +85,7 @@ const CreateContentModal = ({open,onClose}: CreateContentModalProps) => {
               <Input placeholder={'Type'} type='text' value={type} func={(e)=> setType(e.target.value)}/>
             </div>
             
-            <span className="pt-3  " ><Button variant="primary" text={createMutation.isPending ? 'Creating...' : 'Submit'} size="lg"  /></span>
+            <span className="pt-3  " ><Button variant="primary" text={createMutation.isPending ? 'Submitting...' : 'Submit'} size="lg"  /></span>
         </form> }
     </>
   )
