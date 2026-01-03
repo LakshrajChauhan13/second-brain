@@ -22,7 +22,6 @@ const DashBoard = () => {
     const toasts = useAppSelector((state) => state.toast.toasts)
     const toast = useToast()
     const queryClient = useQueryClient()
-    
 
     const { data, isLoading , error } = useQuery({
         queryKey : ['contents'],
@@ -117,7 +116,7 @@ const DashBoard = () => {
 
                 {/* Display contents from Redux */}
                 {!isLoading && !error && (
-                    <div className="grid grid-cols-4 gap-3 mt-8 pl-7">
+                    <div className="grid grid-cols-4 gap-3 mt-8 pl-7 pr-3">
                         {contents && contents.length > 0 ? (
                             contents.map((content) => (
                                 <Card

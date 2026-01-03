@@ -91,7 +91,7 @@ const Card = (props: CardPropsInterface) => {
     
 
   return (
-    <div className={`flex flex-col gap-2 min-h-50 max-w-75 text rounded-lg p-2 bg-white shadow-gray-500/40 shadow 
+    <div className={`flex flex-col gap-2 min-h-50 max-w-73 text rounded-lg p-2 bg-white shadow-gray-500/40 shadow 
     ${props.isDeleting? 'opacity-30' : ''} `}>
 
         <div className="flex items-center justify-between pb-1.5 gap-4 ">
@@ -113,8 +113,8 @@ const Card = (props: CardPropsInterface) => {
             </div>
         </div>
         
-    <div className={`w-full rounded-sm ${ props.type ==='Tweet' ? 'h-60 ' : 'h-60' }   overflow-hidden`}>
-    {props.type === 'Video' && <iframe className="w-full h-full" width="560" height="315" src={getYouTubeEmbedUrl(props.link)} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>}
+    <div className={`w-full rounded-sm ${ props.type ==='Tweet' ? 'h-60 ' : 'h-50' } overflow-hidden mt-0.5`}>
+    {props.type === 'Video' && <iframe className="w-[99.5%] h-full" width="560" height="315" src={getYouTubeEmbedUrl(props.link)} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>}
     {props.type === 'Tweet' && 
             <blockquote className="twitter-tweet" data-width="400">
                 <a href={props.link.replace('x.com' , 'twitter.com')}></a> 

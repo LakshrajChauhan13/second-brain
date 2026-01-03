@@ -30,7 +30,7 @@ export const Button = (props: ButtonPropsInterface) => {
     }
 
     const textSize = {
-        sm: 'text-xs',
+        sm: 'text-[12px] tracking-wide',
         md: 'text-sm',
         lg: 'text-md'
     }
@@ -38,7 +38,7 @@ export const Button = (props: ButtonPropsInterface) => {
     const defaultStyles = 'font-semibold rounded-lg shadow flex justify-center items-center gap-1.5 px-1.5 py-0.5 hover:cursor-pointer disabled:bg-purple-300 disabled:shadow-none disabled:cursor-default disabled:text-purple-900/50 disabled:bg-purple-300 hover:shadow-lg  hover:shadow-gray-400 transition duration-200 ease-in-out' 
 
   return (
-    <button className={` ${defaultStyles} ${variantStyles[props.variant]}  ${size[props.size]}   `} 
+    <button className={`  ${defaultStyles} ${variantStyles[props.variant]}  ${size[props.size]}   `} 
     disabled={props.disabled} >
         {props.icon && <span className={`${iconSize[props.size]} `}> {props.icon} </span>}
         <span className={` ${textSize[props.size]} `}> {props.text} </span>  
