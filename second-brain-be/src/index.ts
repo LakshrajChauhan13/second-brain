@@ -13,7 +13,7 @@ import { linkModel } from './models/link.model.js'
 import { generateRandom } from './utils/utils.js'
 import { tagModel } from './models/tag.model.js'
 import { flattenError, z } from 'zod'
-import { safeSignInSchema, safeSignUpSchema } from './zod.js'
+import { safeCreateContentSchema, safeSignInSchema, safeSignUpSchema } from './zod.js'
 
 const app = express()
 app.use(express.json())
@@ -112,7 +112,7 @@ app.post('/api/v1/signin', async (req , res) => {
 
     res.status(200).json({
         user: userSafe,
-        message : "User signed in !!"
+        message : "Signin successful"
     })
 
 })
@@ -143,7 +143,15 @@ app.get('/api/v1/auth/me' , authMiddleware , async (req , res) => {
 })
 
 app.post('/api/v1/content',authMiddleware, async (req , res) => {       //create content
-    const {link, title, type} = req.body
+    const parsedBody = safeCreateContentSchema.safeParse(req.body)
+    if(!parsedBody.success){
+        return res.json({
+            errors: flattenError(parsedBody.error).fieldErrors,
+            message: "Incorrect format"
+        })
+    }
+    
+    const {link, title, type} = parsedBody.data
     const userId = (req as any).id
 
     await contentModel.create({
@@ -154,7 +162,7 @@ app.post('/api/v1/content',authMiddleware, async (req , res) => {       //create
     })    
 
     res.status(200).json({
-        message : "Content Created !!"
+        message : "Content Added !!"
     })
 
 })
