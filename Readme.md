@@ -1,5 +1,5 @@
 ## 🧠 Second Brain
-A digital knowledge base to capture, organize, and retrieve your internet discoveries. Second Brain allows you to store YouTube videos, Tweets, documents, and articles in one sleek interface, serving as an extension of your memory. 
+A digital knowledge base to capture, organize, and retrieve your internet discoveries. Second Brain allows you to store YouTube videos, Tweets, Links, documents, and articles in one sleek interface, serving as an extension of your memory. 
 
 
 ## 🛠️ Tech Stack

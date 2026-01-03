@@ -10,16 +10,15 @@ import { useAppDispatch, useAppSelector } from "../store/hook";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { removeContent, setContent } from "../store/slice/contentSlice";
 import DeleteContentModal from "../components/DeleteContentModal";
-import { ToastNotification } from "../components/ToastNotification";
 import { useToast } from "../store/toastHook";
-import { AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+
 
 const DashBoard = () => {
     const [isOpen, setIsOpen] = useState(false)
     const [contentToDelete , setContentToDelete] =  useState<string | null>(null)
     const dispatch = useAppDispatch()   // to dispatch an event to the reducer to update the store's value
     const contents = useAppSelector((state) => state.content.contents)      // to get the store's value
-    const toasts = useAppSelector((state) => state.toast.toasts)
     const toast = useToast()
     const queryClient = useQueryClient()
 
@@ -116,7 +115,12 @@ const DashBoard = () => {
 
                 {/* Display contents from Redux */}
                 {!isLoading && !error && (
-                    <div className="grid grid-cols-4 gap-3 mt-8 pl-7 pr-3">
+                    <AnimatePresence>
+                    <motion.div 
+                    initial={{scale: 0.8}}
+                    animate={{scale: 1}}
+                    exit={{scale:0.8}}
+                    className="grid grid-cols-4 gap-3 mt-8 pl-7 pr-3">
                         {contents && contents.length > 0 ? (
                             contents.map((content) => (
                                 <Card
@@ -125,6 +129,7 @@ const DashBoard = () => {
                                     title={content.title}
                                     type={content.type}
                                     link={content.link}
+                                    tags={content.tags}
                                     onDelete = {onDelete}
                                     isDeleting = {deleteMutation.isPending && deleteMutation.variables === content._id}
                                 />
@@ -132,7 +137,8 @@ const DashBoard = () => {
                         ) : (
                             <p className="text-gray-600 text-5xl">No content yet. Add some!</p>
                         )}
-                    </div>
+                    </motion.div>
+                    </AnimatePresence>
                 )}
                 <DeleteContentModal open={contentToDelete !== null} deleteConfirm={onConfirmDelete} onClose={onDeleteModalClose}  />
                 <CreateContentModal open={isOpen} onClose={onClose} />

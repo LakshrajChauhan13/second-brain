@@ -143,7 +143,9 @@ app.get('/api/v1/auth/me' , authMiddleware , async (req , res) => {
 })
 
 app.post('/api/v1/content',authMiddleware, async (req , res) => {       //create content
+    console.log("first")
     const parsedBody = safeCreateContentSchema.safeParse(req.body)
+    
     if(!parsedBody.success){
         return res.json({
             errors: flattenError(parsedBody.error).fieldErrors,
@@ -151,14 +153,33 @@ app.post('/api/v1/content',authMiddleware, async (req , res) => {       //create
         })
     }
     
-    const {link, title, type} = parsedBody.data
+    const {link, title, type, tags} = parsedBody.data
+    console.log(tags)
     const userId = (req as any).id
 
+    const tagsId = await Promise.all(tags.map(async (tagName) => {
+        const tag = await tagModel.findOne({
+            title: tagName
+        })
+        if(tag){
+            return tag._id;
+        }
+        else{
+            const tagCreated = await tagModel.create({
+                title: tagName
+            })
+            return tagCreated._id;
+        }
+    })
+)
+
+    
     await contentModel.create({
         link : link,
         title : title,
         type : type,
-        userId : userId
+        userId : userId,
+        tags : tagsId
     })    
 
     res.status(200).json({
@@ -171,7 +192,7 @@ app.get('/api/v1/content',authMiddleware, async (req , res) => {        //get co
     const userId = (req as any).id
     const content = await contentModel.find({
         userId : userId
-    }).populate("userId" , "username")    
+    }).populate("userId" , "username").populate("tags", "title")  
 
     res.status(200).json({
         message : "Content Fetched !!",
@@ -199,6 +220,24 @@ app.delete('/api/v1/content/:id',authMiddleware , async (req , res) => {    //de
             deletedContent : content,
             message : "Content deleted !!"
         })
+})
+
+app.get('/api/v1/content/tags', authMiddleware, async(req, res) => {    // fetching tags for recommendation
+    try{
+        const tags = await tagModel.find()
+    //     const formattedTags = tags.map((tagsName) => ({
+    //         label: tagsName,
+    //         value: tagsName
+    // }))
+    console.log(tags)
+        res.json({
+            tags: tags
+        })
+    }catch(error){
+        res.status(500).json({
+            message : "Error fetching tags"
+        })
+    }
 })
 
 app.post('/api/v1/brain/share' ,authMiddleware ,async (req , res) => { 

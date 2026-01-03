@@ -20,9 +20,10 @@ export const safeSignInSchema = z.object({
     })
 
 export const safeCreateContentSchema = z.object({
-    title: z.string().min(3, "Title can't be lower than 3 characters").max(20, "Title can't exceed 20 letters"),
-    link: z.url("enter a valid Url"),
-    type: z.string()   
+    title: z.string().min(3, "Title can't be lower than 3 characters").max(30, "Title can't exceed 30 letters"),
+    link: z.url("Enter a valid Url"),
+    type: z.string(),
+    tags: z.array(z.string()).max(3, "You can select upto 3 tags")
 })
 
 
