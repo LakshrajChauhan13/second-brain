@@ -1,6 +1,14 @@
 ## 🧠 Second Brain
 A digital knowledge base to capture, organize, and retrieve your internet discoveries. Second Brain allows you to store YouTube videos, Tweets, Links, documents, and articles in one sleek interface, serving as an extension of your memory. 
 
+## Features
+- Save YouTube videos, Tweets/X posts, links, documents, and LinkedIn posts
+- Tag items (max 3 per item) for quick filtering
+- Personal shareable "brain" links — optionally public; anyone with the link can view the shared content.
+- Authentication with JWT stored in cookies
+- Server-side validation with Zod
+- Optimistic UI updates and caching with TanStack Query
+
 
 ## 🛠️ Tech Stack
 ### Frontend
