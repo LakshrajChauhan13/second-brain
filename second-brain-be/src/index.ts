@@ -143,7 +143,6 @@ app.get('/api/v1/auth/me' , authMiddleware , async (req , res) => {
 })
 
 app.post('/api/v1/content',authMiddleware, async (req , res) => {       //create content
-    console.log("first")
     const parsedBody = safeCreateContentSchema.safeParse(req.body)
     
     if(!parsedBody.success){
@@ -241,13 +240,14 @@ app.get('/api/v1/content/tags', authMiddleware, async(req, res) => {    // fetch
 })
 
 app.post('/api/v1/brain/share' ,authMiddleware ,async (req , res) => { 
-    const { share } = req.body;  
-    const userId =  (req as any).id;
+    const {share} = req.body;  
+    console.log(share)
+    const userId = (req as any).id;
     if(share){
         const existingLink = await linkModel.findOne({userId : userId}) 
         if(existingLink){
             return res.json({
-                message : `Your link ${existingLink.hash}`
+                message : `${existingLink.hash}`
             })    
         }
 
@@ -256,7 +256,7 @@ app.post('/api/v1/brain/share' ,authMiddleware ,async (req , res) => {
             userId : userId
         })
         return res.json({
-            message : `Your link ${link.hash}`
+            message : `${link.hash}`
         })
     }
     else{
@@ -271,11 +271,11 @@ app.post('/api/v1/brain/share' ,authMiddleware ,async (req , res) => {
 
 app.get('/api/v1/brain/:shareLink' , async (req , res) => {
     const hash = req.params.shareLink;
-    console.log('first')
+    console.log("hash", hash)
     const link = await linkModel.findOne({
         hash : hash
     })
-
+    console.log(link)
     if(!link){
         return res.json({
             message : "Sorry incorrect input"
@@ -284,7 +284,9 @@ app.get('/api/v1/brain/:shareLink' , async (req , res) => {
     
     const content = await contentModel.find({
         userId : link.userId
-    })
+    }).populate("tags", "title").populate("userId", "username")
+
+    console.log(content)
 
     const user = await userModel.findOne({
         _id : link.userId

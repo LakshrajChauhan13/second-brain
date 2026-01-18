@@ -12,6 +12,7 @@ import { removeContent, setContent } from "../store/slice/contentSlice";
 import DeleteContentModal from "../components/DeleteContentModal";
 import { useToast } from "../store/toastHook";
 import { motion, AnimatePresence } from "framer-motion";
+import { ShareModal } from "../components/ShareModal";
 
 
 const DashBoard = () => {
@@ -21,6 +22,8 @@ const DashBoard = () => {
     const contents = useAppSelector((state) => state.content.contents)      // to get the store's value
     const toast = useToast()
     const queryClient = useQueryClient()
+    const [isShareModalPop, setShareModalPop] = useState(false)
+    // const deleteButtonEnable
 
     const { data, isLoading , error } = useQuery({
         queryKey : ['contents'],
@@ -72,7 +75,10 @@ const DashBoard = () => {
         setIsOpen(c => !c)
     }
 
-   
+    function shareModalPopToggle() {
+        setShareModalPop(c => !c)
+    }
+    
     // function handleEsc(event: KeyboardEvent){
     //     if(event.key === 'Escape'){
     //         onDeleteModalClose()
@@ -91,11 +97,15 @@ const DashBoard = () => {
             
                 <header className="flex justify-between h-16 p-2 pl-7 items-center gap-2 sticky top-0 left-0 right-0 z-10 backdrop-blur-sm bg-white/50  " >
                     <span className="text-black font-bold text-4xl">All Notes</span>
-                    <span className="flex justify-end gap-2 p-1">
-                        <span onClick={() => setIsOpen(c => !c)}>
+                    <span className="flex justify-end gap-2 p-1 pr-0 relative">
+                        <motion.span whileTap={{scale: 0.9}} onClick={() => setIsOpen(c => !c)}>
                             <Button text="Add Content" icon={<PlusIcon />} size="lg" variant="primary" />
-                        </span>
-                        <Button text="Share Brain" icon={<ShareIcon />} size="lg" variant="secondary" />
+                        </motion.span>
+
+                        <motion.span whileTap={{scale: 0.9}} onClick={shareModalPopToggle} className="">
+                            <Button isShareModalPop={isShareModalPop} text="Share Brain" icon={<ShareIcon />} size="lg" variant="secondary" />
+                        </motion.span>
+                            <ShareModal open={isShareModalPop} />
                     </span>
                 </header>
 
@@ -116,11 +126,13 @@ const DashBoard = () => {
                 {/* Display contents from Redux */}
                 {!isLoading && !error && (
                     <AnimatePresence>
+                <div className=" flex w-full justify-center items-center ">
+
                     <motion.div 
                     initial={{scale: 0.8}}
                     animate={{scale: 1}}
                     exit={{scale:0.8}}
-                    className="grid grid-cols-4 gap-3 mt-8 pl-7 pr-3">
+                    className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-3 mt-8 pl-7 pr-3 ">
                         {contents && contents.length > 0 ? (
                             contents.map((content) => (
                                 <Card
@@ -131,6 +143,7 @@ const DashBoard = () => {
                                     link={content.link}
                                     tags={content.tags}
                                     onDelete = {onDelete}
+                                    deleteButtonEnable = {true}
                                     isDeleting = {deleteMutation.isPending && deleteMutation.variables === content._id}
                                 />
                             ))
@@ -138,6 +151,7 @@ const DashBoard = () => {
                             <p className="text-gray-600 text-5xl">No content yet. Add some!</p>
                         )}
                     </motion.div>
+                </div>
                     </AnimatePresence>
                 )}
                 <DeleteContentModal open={contentToDelete !== null} deleteConfirm={onConfirmDelete} onClose={onDeleteModalClose}  />
