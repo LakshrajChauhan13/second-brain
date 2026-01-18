@@ -4,7 +4,7 @@ interface TextInterface {
 
 export function InputHeadline ({text}: TextInterface){
     return (
-            <h1 className=" font-semibold text-sm pb-0.5 ">
+            <h1 className=" font-semibold text-gray-500 text-sm  tracking-wide ">
                 {text}
             </h1>     
     )

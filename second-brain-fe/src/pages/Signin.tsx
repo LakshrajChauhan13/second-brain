@@ -10,15 +10,12 @@ import { useForm } from 'react-hook-form'
 import { safeSignInSchema, type SignInInput } from '../zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import InputError from '../components/InputError'
+import { useState } from 'react'
 
 interface SignUpProps {
     SignUpToggle : () => void
 }
 
-interface userData {
-    email: string;
-    password: string
-}
 
 export interface ErrorMessage {
     message: string
@@ -30,6 +27,7 @@ const Signin = ({SignUpToggle}: SignUpProps) => {
    })
     const toast = useToast()
     const navigate = useNavigate()
+    const [focused, setFocused] = useState('')
 
     async function submitHandler(data: SignInInput){
         signInMutation.mutate(data)
@@ -68,16 +66,16 @@ const Signin = ({SignUpToggle}: SignUpProps) => {
             
             <form onSubmit={handleSubmit(submitHandler)} className=" flex flex-col gap-5 w-80 " action="">
                 <div className='flex flex-col gap-0.5'>
-                    <Input placeholder="Enter email" type="email" {...register("email")} />
+                    <Input focused={focused} setFocused={setFocused} placeholder="Enter email" type="email" {...register("email")} />
                     {errors.email && <InputError message={errors.email.message} />}
                 </div>
 
                 <div className='flex flex-col gap-0.5'>
-                    <Input placeholder="Enter password" type="password" {...register("password")}  />
+                    <Input focused={focused} setFocused={setFocused} placeholder="Enter password" type="password" {...register("password")}  />
                     {errors.password && <InputError message={errors.password.message} />}
                 </div>
 
-                <Button variant="primary" text={signInMutation.isPending? 'Signing in...' : 'Sign In'} size="lg" disabled={signInMutation.isPending} />
+                <Button width='full' variant="primary" text={signInMutation.isPending? 'Signing in...' : 'Sign In'} size="lg" disabled={signInMutation.isPending} />
             </form>
             <h1> Don't have an account? <span onClick={SignUpToggle} className='font-semibold cursor-pointer'> Sign Up</span></h1>
         </motion.div>

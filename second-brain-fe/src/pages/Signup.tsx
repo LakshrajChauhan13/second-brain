@@ -9,12 +9,11 @@ import { useForm } from 'react-hook-form'
 import { safeSignUpSchema, type SignUpInput } from "../zod"
 import { zodResolver } from '@hookform/resolvers/zod'
 import InputError from "../components/InputError"
+import { useState } from "react"
 
 
 const Signup = ({SignUpToggle}: {SignUpToggle :() => void}) => {
-    // const [userName , setUserName] = useState('')
-    // const [password , setPassword] = useState('')
-    // const [email , setEmail] = useState('')
+    const [focused, setFocused] = useState('')
 
     const { register, handleSubmit, formState: { errors } } = useForm<SignUpInput>({
         resolver: zodResolver(safeSignUpSchema)
@@ -69,22 +68,22 @@ const Signup = ({SignUpToggle}: {SignUpToggle :() => void}) => {
             <form className=" flex flex-col gap-5 w-80 " onSubmit={handleSubmit(submitHandler)} action="">
 
                 <div className="flex flex-col gap-0.5">
-                    <Input placeholder="Username" type="text" {...register("username")} />
+                    <Input focused={focused} setFocused={setFocused} placeholder="Username" type="text" {...register("username")} />
                     {errors.username && <InputError message={errors.username.message} />}
                 </div>
 
                 <div className="flex flex-col gap-0.5">
-                    <Input placeholder="Enter email" type="email" {...register("email")} />
+                    <Input focused={focused} setFocused={setFocused} placeholder="Enter email" type="email" {...register("email")} />
                     {errors.email && <InputError message={errors.email.message} />}
                 </div>
 
                 <div className="flex flex-col gap-0.5">
-                    <Input placeholder="Enter password" type="password"  {...register("password")} />
+                    <Input focused={focused} setFocused={setFocused} placeholder="Enter password" type="password"  {...register("password")} />
                     {errors.password && <InputError message={errors.password.message} />}
                 </div>
 
 
-                <Button variant="primary" text={signUpMutation.isPending ? 'Signing Up...' : 'Sign Up'} size="lg" disabled={signUpMutation.isPending} />
+                <Button width="full" variant="primary" text={signUpMutation.isPending ? 'Signing Up...' : 'Sign Up'} size="lg" disabled={signUpMutation.isPending} />
             </form>
             <h1> Already have an account? <span onClick={SignUpToggle} className='font-semibold cursor-pointer'> Sign In</span></h1>
         

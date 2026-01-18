@@ -26,7 +26,7 @@ export const ToastNotification = ( {message , type, zIndex, index = 0 }: ToastNo
         error: "text-red-500/80 bg-red-50",
         copied: "text-green-500/90 bg-green-50",
         deleted: "text-red-500/80 bg-red-50",
-        logout: "bg-white text-black"
+        logout: "bg-white text-black border-l-2 border-black/30  "
     }
 
     const scale = 1 - (index * 0.04 );
@@ -41,10 +41,10 @@ export const ToastNotification = ( {message , type, zIndex, index = 0 }: ToastNo
       animate={{opacity: opacity , y: yOffset, scale: scale}}
       exit={{opacity: 0 , y:-40, scale: 0.85, transition: { duration: 0.25}}}
       transition={{type: "spring", stiffness: 400, damping: 30}}
-        className={`flex gap-1 items-start justify-start rounded-lg font-semibold shadow-md shadow-black/40  max-h-20 
+        className={`flex gap-1 items-center justify-start rounded-lg  font-semibold shadow-md shadow-black/40  h-12
         break-normal w-75 ${messageStyles[type]}  px-2.5 py-3 
   `}>
-             <span className="size-4 " > {iconVariants[type]} </span>
+            <span className="size-4"> {iconVariants[type]} </span>
             <p className="text-xs "> {message} </p>
         </motion.div>
     </>

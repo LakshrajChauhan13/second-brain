@@ -8,13 +8,18 @@ import { TwitterIcon } from "../icons/TwitterIcon";
 import CopyIcon from "../icons/CopyIcon";
 import { TickIcon } from "../icons/TickIcon";
 import { useToast } from "../store/toastHook";
+import Tag from "./Tag";
+import { LinkedinIcon } from "../icons/LinkedinIcon";
+import { LinkIcon } from "../icons/LinkIcon";
 
 interface CardPropsInterface {
     id : string;
     title: string;
-    type: 'Document' | 'Video' | 'Tweet';
+    type: 'Document' | 'Video' | 'Tweet' | 'Linkedin' | 'Link';
     link: string;
-    onDelete: (id: string) => void;
+    tags: string[] | undefined;
+    deleteButtonEnable : boolean;
+    onDelete?: (id: string) => void;
     isDeleting? : boolean;
 }
 
@@ -22,12 +27,16 @@ interface BrainTypeInterface {
     Document?: ReactElement;
     Video?: ReactElement;
     Tweet?: ReactElement;
+    Linkedin?: ReactElement;
+    Link? : ReactElement
 }
 
 const brainType: BrainTypeInterface= {
     Document : <DocumentIcon />,
     Video : <VideoIcon />,
-    Tweet : <TwitterIcon />
+    Tweet : <TwitterIcon />,
+    Linkedin : <LinkedinIcon />,
+    Link : <LinkIcon />
 }
 
 const iconStyle = "size-4 text-slate-400 font-bold"
@@ -37,9 +46,12 @@ const Card = (props: CardPropsInterface) => {
     const [isCopied , setIsCopied] = useState(false)
     const toast = useToast()
     
-     async function deleteIt(){
-        props.onDelete(props.id)
+    async function deleteIt(){
+        if(props.onDelete){
+            props.onDelete(props.id)
+        }
     }
+
 
     async function shareContent(){
         
@@ -47,6 +59,8 @@ const Card = (props: CardPropsInterface) => {
             Video: `Watch this video: ${props.title}`,
             Tweet: `Checkout this tweet: ${props.title}`,
             Document: `Read this document: ${props.title}`,
+            Linkedin: `Checkout this post: ${props.title}`,
+            Link: `Visit this link: ${props.title}`,
         }
 
         const shareData = {
@@ -107,9 +121,11 @@ const Card = (props: CardPropsInterface) => {
                 <span onClick={() => onCopy()} className={` ${iconStyle} hover:text-green-600 transition-all duration-130 ease-in-out cursor-pointer `}>
                      { isCopied ? <span className="text-green-600 "><TickIcon /></span> : <CopyIcon /> } 
                 </span>
-                <span onClick={deleteIt} className={` ${iconStyle} cursor-pointer hover:text-red-400 hover:transition duration-150 ease-in-out`}> 
-                    <DeleteIcon /> 
-                </span>
+
+                {props.deleteButtonEnable ? <span onClick={deleteIt} className={` ${iconStyle} cursor-pointer hover:text-red-400 hover:transition duration-150 ease-in-out`}> 
+                    <DeleteIcon />
+                </span>  : ''}
+
             </div>
         </div>
         
@@ -127,10 +143,12 @@ const Card = (props: CardPropsInterface) => {
         </div> */}
     </div>
 
-        <div className="flex gap-1.5 flex-wrap">
-            <span>tag</span>
-            <span>tag</span>
-            <span>tag</span>
+        <div className="flex gap-1.5 flex-wrap mt-0.5">
+            {props.tags?.map((tag) => {
+                return <Tag text={tag} />
+            })  }
+            {/* <Tag text="Productivity" />
+            <Tag text="Work"/> */}
         </div>
     </div>
   )
