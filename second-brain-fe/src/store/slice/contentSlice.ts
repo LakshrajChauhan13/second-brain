@@ -5,7 +5,7 @@ export interface Content {
   _id : string;
   title : string;
   link : string;
-  type : 'Document' | 'Video' | 'Tweet';
+  type : 'Document' | 'Video' | 'Tweet' | 'Linkedin' | 'Link';
   tags? : string[];
   createdAt? : string
 }
