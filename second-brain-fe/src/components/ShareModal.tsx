@@ -38,7 +38,7 @@ export const ShareModal = ({open, onClose}: ShareModalInterface) => {
     })
 
     function publishBrain(){
-        var newStatus = !isBrainLive
+        const newStatus = !isBrainLive
         setIsBrainLive(c => !c)
         brainLiveMutation.mutate(newStatus)
     }

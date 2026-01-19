@@ -103,7 +103,7 @@ const DashBoard = () => {
                         </motion.span>
 
                         <motion.span whileTap={{scale: 0.9}} onClick={shareModalPopToggle} className="">
-                            <Button isShareModalPop={isShareModalPop} text="Share Brain" icon={<ShareIcon />} size="lg" variant="secondary" />
+                            <Button text="Share Brain" icon={<ShareIcon />} size="lg" variant="secondary" />
                         </motion.span>
                             <ShareModal open={isShareModalPop} />
                     </span>
